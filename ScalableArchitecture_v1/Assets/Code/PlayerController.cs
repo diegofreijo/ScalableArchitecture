@@ -6,10 +6,20 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private Rigidbody2D rb;
-    [SerializeField] private float speed = 10f;
+    [SerializeField] private int speed = 300;
+    [SerializeField] private SpriteRenderer spriteRenderer;
+
+    private Vector2 movement = Vector2.zero;
 
     public void OnMove(InputValue value)
     {
-        rb.velocity = value.Get<Vector2>() * speed * Time.deltaTime;
+        movement = value.Get<Vector2>();
+        if (movement.x != 0)
+            spriteRenderer.flipX = movement.x < 0;
+    }
+
+    private void FixedUpdate()
+    {
+        rb.velocity = speed * Time.deltaTime * movement;
     }
 }
