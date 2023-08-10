@@ -7,23 +7,28 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private GameObject enemyPrefab;
     [SerializeField] private Rect spawnArea;
 
+    private int nextId = 1;
+
     void Start()
     {
-        StartCoroutine(Spawner());
+        StartCoroutine(StartSpawning());
     }
 
-    private IEnumerator Spawner()
+    private IEnumerator StartSpawning()
     {
         while (true)
         {
-            yield return new WaitForSeconds(interval);
-
             var position = new Vector2(
                 UnityEngine.Random.Range(spawnArea.xMin, spawnArea.xMax),
                 UnityEngine.Random.Range(spawnArea.yMin, spawnArea.yMax)
             );
 
-            Instantiate(enemyPrefab, position, Quaternion.identity, transform);
+            var go = Instantiate(enemyPrefab, position, Quaternion.identity, transform);
+
+            go.name += nextId;
+            nextId++;
+
+            yield return new WaitForSeconds(interval);
         }
     }
 
