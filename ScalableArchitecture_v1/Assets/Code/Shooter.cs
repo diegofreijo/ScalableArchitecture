@@ -1,29 +1,36 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Shooter : MonoBehaviour
 {
     [SerializeField] private GameObject bulletPrefab;
-    [SerializeField] private float shootInterval = 1;
+    // [SerializeField] private float shootInterval = 1;
     [SerializeField] private float bulletSpeed = 10;
 
     private readonly List<Transform> enemiesOnRange = new();
+    private Vector2 lookingAt = Vector2.zero;
 
-    void Start()
+    public void OnLook(InputValue value)
     {
-        StartCoroutine(StartShooting());
+        lookingAt = Camera.main.ScreenToWorldPoint(value.Get<Vector2>());
     }
 
-    private IEnumerator StartShooting()
+    public void OnFire()
     {
-        while (true)
-        {
-            yield return new WaitForSeconds(shootInterval);
-            if (enemiesOnRange.Count > 0)
-                FireAt(enemiesOnRange[0].position);
-        }
+        FireAt(lookingAt);
     }
+
+    // private IEnumerator StartShooting()
+    // {
+    //     while (true)
+    //     {
+    //         yield return new WaitForSeconds(shootInterval);
+    //         if (enemiesOnRange.Count > 0)
+    //             FireAt(enemiesOnRange[0].position);
+    //     }
+    // }
 
     private void FireAt(Vector2 target)
     {
